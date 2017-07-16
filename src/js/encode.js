@@ -68,7 +68,7 @@ function extendRange(max) {
 function getPrimes(max) {
     let r = extendRange(max)
     let primes = [2]
-    for (let i = 3; i <= max; i += 2) {
+    for (let i = 3; i <= r; i += 2) {
         if (isPrime(i, primes)) {
             primes.push(i)
         }
@@ -78,4 +78,7 @@ function getPrimes(max) {
 }
 
 let max = Number.parseInt(process.argv[2])
-fs.writeFileSync('./1.bin', getPrimes(max), 'binary')
+let startT = Date.now()
+let primes = getPrimes(max)
+console.log('Took ' + (Date.now() - startT).toString() + ' ms')
+fs.writeFileSync('./1.bin', primes, 'binary')
