@@ -24,7 +24,7 @@ namespace PrimeEncode
             return true;
         }
 
-        private static byte[] Encode(int[] primes)
+        public static byte[] Encode(int[] primes)
         {
             if (primes[0] != 11) throw new Exception();
 
@@ -88,57 +88,69 @@ namespace PrimeEncode
             return allPrimes;
         }
 
+        private static List<int> GetPrimesInRangeNew(int sectorStart, int sectorCount,
+            List<int> allPrimes)
+        {
+            var res = new List<int>();
+            var n = sectorStart * 30 + 11;
+            for (int i = 0; i < sectorCount; i++)
+            {
+                if (IsPrime(n, allPrimes)) res.Add(n);
+                n += 2;
+                if (IsPrime(n, allPrimes)) res.Add(n);
+                n += 4;
+                if (IsPrime(n, allPrimes)) res.Add(n);
+                n += 2;
+                if (IsPrime(n, allPrimes)) res.Add(n);
+                n += 4;
+                if (IsPrime(n, allPrimes)) res.Add(n);
+                n += 6;
+                if (IsPrime(n, allPrimes)) res.Add(n);
+                n += 2;
+                if (IsPrime(n, allPrimes)) res.Add(n);
+                n += 6;
+                if (IsPrime(n, allPrimes)) res.Add(n);
+                n += 4;
+            }
+
+            return res;
+        }
+
         public static byte[] GetPrimesBytes(int max)
         {
             return Encode(GetPrimes(max).Skip(1).ToArray());
         }
 
-        // Primes starting from 11.
+        // Primes starting from 7.
         public static List<int> GetPrimes(int max)
         {
             var primes = new List<int>() { 7 };
             return GetPrimesInRange(0, (max - 10) / 30, primes);
         }
 
-        /*
-        private static void CombineLists(List<int>[] x,List<int> y,int index,object _lock)
-        {
-            lock (_lock)
-            {
-                x[index]=
-            }
-        }*/
-        /*
-        private static void AddToList(List<int> primeList, List<int> threadRes,
-            int index, object _lock, int chunkSize)
-        {
-            lock (_lock)
-            {
-                primeList.AddRange(threadRes);
-            }
-        }*/
-
         private static void FillPrimesParallel(List<int> allPrimes, int currentSeg,
-            int segCount, object _lock, int maxSegCount)
+            int segCount, object _lock, int maxSegCount, Action<List<int>> callback)
         {
             var lists = new List<int>[4];
 
             for (int i = 0; i < 4; i++)
             {
-                var t = new Thread(() => ThreadTask(i, currentSeg + i * segCount, segCount,
-                    allPrimes, _lock, lists, maxSegCount));
+                var j = i;
+                var t = new Thread(() => ThreadTask(j, currentSeg + i * segCount, segCount,
+                    allPrimes, _lock, lists, maxSegCount, callback));
                 t.Start();
             }
         }
 
         private static void ThreadTask(int index, int currentSeg, int segCount,
-            List<int> allPrimes, object _lock, List<int>[] lists, int maxSegCount)
+            List<int> allPrimes, object _lock, List<int>[] lists, int maxSegCount,
+            Action<List<int>> callback)
         {
-            var p = GetPrimesInRange(currentSeg, segCount, allPrimes);
+            var p = GetPrimesInRangeNew(currentSeg, segCount, allPrimes);
 
             lock (_lock)
             {
-                lists[0] = p;
+                lists[index] = p;
 
                 if (lists.All(i => i != null))
                 {
@@ -147,13 +159,20 @@ namespace PrimeEncode
                         allPrimes.AddRange(lists[j]);
                     }
 
-                    FillPrimesParallel(allPrimes, currentSeg + 4 * segCount,
-                        segCount, _lock, maxSegCount);
+                    if (currentSeg >= maxSegCount)
+                    {
+                        callback(allPrimes);
+                    }
+                    else
+                    {
+                        FillPrimesParallel(allPrimes, currentSeg + 4 * segCount,
+                            segCount, _lock, maxSegCount, callback);
+                    }
                 }
             }
         }
 
-        public static void GetPrimesParallel(int max, Action callback)
+        public static void GetPrimesParallel(int max, Action<List<int>> callback)
         {
             object _lock = new object();
 
@@ -161,12 +180,12 @@ namespace PrimeEncode
             const int segCount = 30000;
             const int chunkSize = segCount * 30;
 
-            // Get primes starting from 11.
+            // Get primes starting from 7.
             var primes = GetPrimes(chunkSize + 10);
             var currentSeg = segCount;
             var maxSegCount = Math.Ceiling((max - 10.0) / 30);
 
-            FillPrimesParallel(primes, currentSeg, segCount, _lock, (int)maxSegCount);
+            FillPrimesParallel(primes, currentSeg, segCount, _lock, (int)maxSegCount, callback);
         }
 
     }

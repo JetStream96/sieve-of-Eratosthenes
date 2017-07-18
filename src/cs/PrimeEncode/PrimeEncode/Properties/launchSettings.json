@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PrimeEncode": {
+      "commandName": "Project",
+      "commandLineArgs": "1000000 -p"
+    }
+  }
+}
