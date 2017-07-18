@@ -136,7 +136,7 @@ namespace PrimeEncode
             for (int i = 0; i < 4; i++)
             {
                 var j = i;
-                var t = new Thread(() => ThreadTask(j, currentSeg + i * segCount, segCount,
+                var t = new Thread(() => ThreadTask(j, currentSeg + j * segCount, segCount,
                     allPrimes, _lock, lists, maxSegCount, callback));
                 t.Start();
             }
