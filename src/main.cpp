@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "prime_gen.h"
 #include <string>
 #include <iostream>

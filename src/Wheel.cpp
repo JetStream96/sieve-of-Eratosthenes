@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Wheel.h"
 #include <iostream>
 

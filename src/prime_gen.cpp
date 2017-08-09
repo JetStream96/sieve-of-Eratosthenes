@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "prime_gen.h"
 #include <iostream>
 #include "global.h"
@@ -71,7 +70,7 @@ vector<char> get_primes(int max, int wheel_prime_count, int seg_size)
 		if (is_prime(primes, i))
 		{
 			int j = i*i/period;
-			while (j < )
+			while (j < -50)
 			{
 
 			}
@@ -126,7 +125,7 @@ vector<char> get_primes_by_trial(int max)
 }
 
 template <typename T>
-bool sequence_equal(vector<T>& x, vector<T>& y)
+bool sequence_equal(const vector<T>& x, const vector<T>& y)
 {
 	int len = x.size();
 	if (len != y.size()) return false;

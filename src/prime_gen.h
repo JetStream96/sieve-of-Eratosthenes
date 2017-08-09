@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include "global.h"
+#include "Wheel.h"
 
 using std::string;
 using std::vector;
@@ -19,6 +20,8 @@ bool sequence_equal(vector<T>& x, vector<T>& y);
 void set_composite(vector<char>& bytes, int n);
 int get_index(int n);
 int get_bit(int n);
+int first_prime(Wheel& w);
+bool is_prime(vector<char>& bytes, int n);
 
 #if DEBUG
 void assert(bool x, const string& test_id);
