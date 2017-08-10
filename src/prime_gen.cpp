@@ -14,19 +14,21 @@ using std::max;
 
 bool is_prime(int x)
 {
-	if (x == 2) return true;
+	if (x == 2)
+		return true;
 
 	int n = 3;
-	while (n*n <= x)
+	while (n * n <= x)
 	{
-		if (x%n == 0 && x != n) return false;
+		if (x % n == 0 && x != n)
+			return false;
 		n += 2;
 	}
 
 	return true;
 }
 
-vector<string> to_str_vec(char ** c, int count)
+vector<string> to_str_vec(char **c, int count)
 {
 	auto res = vector<string>();
 	for (int i = 0; i < count; i++)
@@ -36,54 +38,71 @@ vector<string> to_str_vec(char ** c, int count)
 	return res;
 }
 
-void test_prime(const string& num)
+void test_prime(const string &num)
 {
 	try
 	{
 		auto n = stoi(num);
 		cout << (is_prime(n) ? "True" : "False") << "\n";
 	}
-	catch (const exception&)
+	catch (const exception &)
 	{
 		cout << "Input is not a valid integer.\n";
 	}
 }
 
 /*
-	Segmented sieve
+	sieve of Eratosthenes
 
 	Encode [3, 5, 7, 9, 11, 13, 15, 17] in a single byte.
 	First bit is 1 iff 3 is a prime. Second bit is 1 iff 5 is a prime.
 	Similar for [19, 21, ..., 33], etc.
 */
-vector<char> get_primes(int max, int wheel_prime_count, int seg_size)
+vector<char> get_primes(int max, int wheel_prime_count)
 {
 	int n = extend_range(max);
 	int sqrtn = (int)ceil(sqrt(n));
 	auto wheel = Wheel(wheel_prime_count);
 	auto ns = wheel.get_non_spoke();
+	int ns_count = ns.size();
 	int period = wheel.get_period();
 	auto primes = get_init_vec(max);
 
 	for (int i = first_prime(wheel); i <= sqrtn; i += 2)
 	{
-		if (is_prime(primes, i))
-		{
-			int j = i*i/period;
-			while (j < -50)
-			{
+		if (!is_prime(primes, i))
+			continue;
 
-			}
+		// Multiples of i is marked composite.
+		// We start from i*i.
+		int period_offset = i / period;
+		int ns_index = 0;
+		int j = period_offset * period + ns[ns_index];
+
+		while (i*j <= n)
+		{
+			set_composite(primes, j * i);
+			ns_index++;
+			int div = ns_index / ns_count;
+			ns_index -= div * ns_count;
+			period_offset += div;
+
+			j = period_offset * period + ns[ns_index];
 		}
 	}
 
 	return primes;
 }
 
-int first_prime(Wheel& w)
+vector<char> get_primes_segmented(int max, int wheel_prime_count, int seg_size)
+{
+}
+
+int first_prime(Wheel &w)
 {
 	auto p = w.get_wheel_primes();
-	if (p.size() <= 1) return 3;
+	if (p.size() <= 1)
+		return 3;
 	return p[p.size() - 1] + 2;
 }
 
@@ -98,7 +117,7 @@ vector<char> get_init_vec(int max)
 	return res;
 }
 
-void init_vec(vector<char>& is_prime)
+void init_vec(vector<char> &is_prime)
 {
 	for (size_t i = 0; i < is_prime.size(); i++)
 	{
@@ -108,7 +127,8 @@ void init_vec(vector<char>& is_prime)
 
 int extend_range(int max)
 {
-	if (max <= 2) return extend_range(3);
+	if (max <= 2)
+		return extend_range(3);
 	return (int)(ceil((max - 2.0) / 16) * 16 + 1);
 }
 
@@ -118,26 +138,29 @@ vector<char> get_primes_by_trial(int max)
 
 	for (int i = 3; i <= extend_range(max); i += 2)
 	{
-		if (!is_prime(i)) set_composite(res, i);
+		if (!is_prime(i))
+			set_composite(res, i);
 	}
 
 	return res;
 }
 
 template <typename T>
-bool sequence_equal(const vector<T>& x, const vector<T>& y)
+bool sequence_equal(const vector<T> &x, const vector<T> &y)
 {
 	int len = x.size();
-	if (len != y.size()) return false;
+	if (len != y.size())
+		return false;
 	for (int i = 0; i < len; i++)
 	{
-		if (x[i] != y[i]) return false;
+		if (x[i] != y[i])
+			return false;
 	}
 
 	return true;
 }
 
-bool is_prime(vector<char>& bytes, int n)
+bool is_prime(vector<char> &bytes, int n)
 {
 	int b = get_bit(n);
 	int index = get_index(n);
@@ -145,7 +168,7 @@ bool is_prime(vector<char>& bytes, int n)
 	return (bytes[index] & c) == c;
 }
 
-void set_composite(vector<char>& bytes, int n)
+void set_composite(vector<char> &bytes, int n)
 {
 	int b = get_bit(n);
 	int index = get_index(n);
@@ -164,7 +187,7 @@ int get_bit(int n)
 
 #if DEBUG
 
-void assert(bool x, const string& test_id)
+void assert(bool x, const string &test_id)
 {
 	if (!x)
 	{
@@ -192,12 +215,12 @@ void self_test()
 	test_get_primes();
 	wheel_test();
 
-	cout << "Self-test finished.";
+	cout << "Self-test finished.\n";
 }
 
 void test_get_primes_by_trial()
 {
-	auto expected = vector<char>{ (char)237, (char)166 };
+	auto expected = vector<char>{(char)237, (char)166};
 	assert(sequence_equal(expected, get_primes_by_trial(33)), "get_primes_by_trial");
 }
 
@@ -214,7 +237,8 @@ void wheel_test()
 	assert(w.get_prime_count() == 3, "wheel_test #0");
 	assert(sequence_equal(w.get_wheel_primes(), vector<int>{2, 3, 5}), "wheel_test #1");
 	assert(sequence_equal(w.get_non_spoke(),
-		vector<int>{1, 7, 11, 13, 17, 19, 23, 29}), "wheel_test #2");
+						  vector<int>{1, 7, 11, 13, 17, 19, 23, 29}),
+		   "wheel_test #2");
 }
 
 #endif

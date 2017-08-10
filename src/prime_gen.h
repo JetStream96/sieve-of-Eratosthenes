@@ -10,7 +10,9 @@ using std::vector;
 bool is_prime(int x);
 vector<string> to_str_vec(char ** c, int count);
 void test_prime(const string& num);
-vector<char> get_primes(int max, int wheel_prime_count = 3, int seg_size=1'000'000);
+vector<char> get_primes(int max, int wheel_prime_count = 3);
+vector<char> get_primes_segmented(int max, 
+    int wheel_prime_count = 3, int seg_size=1'000'000);
 vector<char> get_init_vec(int max);
 void init_vec(vector<char>& is_prime);
 int extend_range(int max);

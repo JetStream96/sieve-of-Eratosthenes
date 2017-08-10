@@ -12,7 +12,7 @@ vector<int> get_prime_singleton()
 	static vector<int> p;
 	if (p.empty())
 	{
-		p = vector<int>({ 2 ,3,5,7,11,13,17,19,23,29,31,37,41,43,47 });
+		p = vector<int>({ 2,3,5,7,11,13,17,19,23,29,31,37,41,43,47 });
 	}
 	return p;
 }
