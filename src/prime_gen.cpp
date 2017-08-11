@@ -73,7 +73,7 @@ vector<char> get_primes(int max, int wheel_prime_count)
 	{
 		if (!is_prime(primes, i, wp))
 			continue;
-		cout << i << "\n";
+		//cout << i << "\n";
 		// Multiples of i is marked composite.
 		// We start from i*i.
 		int period_offset = i / period;
