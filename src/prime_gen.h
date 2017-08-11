@@ -23,7 +23,9 @@ void set_composite(vector<char>& bytes, int n);
 int get_index(int n);
 int get_bit(int n);
 int first_prime(Wheel& w);
+bool is_prime(vector<char> &bytes, int n, vector<int> &wheel_prime);
 bool is_prime(vector<char>& bytes, int n);
+void set_wheel_multiples(vector<char>& primes, const Wheel &w);
 
 #if DEBUG
 void assert(bool x, const string& test_id);

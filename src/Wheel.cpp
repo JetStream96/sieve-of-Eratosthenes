@@ -17,7 +17,7 @@ vector<int> get_prime_singleton()
 	return p;
 }
 
-int Wheel::get_prime_count()
+int Wheel::get_prime_count() const
 {
 	return prime_count;
 }
@@ -34,7 +34,7 @@ int Wheel::get_period()
 	return period;
 }
 
-vector<int> Wheel::get_wheel_primes()
+vector<int> Wheel::get_wheel_primes() const
 {
 	static vector<int> p;
 	if (p.empty())

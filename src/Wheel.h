@@ -11,9 +11,9 @@ private:
 
 public:
 	Wheel(int prime_count);
-	int get_prime_count();
+	int get_prime_count() const;
 	int get_period();
-	vector<int> get_wheel_primes();
+	vector<int> get_wheel_primes() const;
 	vector<int> get_non_spoke();
 	~Wheel();
 };

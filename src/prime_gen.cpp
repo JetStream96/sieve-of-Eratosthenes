@@ -63,6 +63,7 @@ vector<char> get_primes(int max, int wheel_prime_count)
 	int n = extend_range(max);
 	int sqrtn = (int)ceil(sqrt(n));
 	auto wheel = Wheel(wheel_prime_count);
+	auto wp = wheel.get_wheel_primes();
 	auto ns = wheel.get_non_spoke();
 	int ns_count = ns.size();
 	int period = wheel.get_period();
@@ -70,16 +71,21 @@ vector<char> get_primes(int max, int wheel_prime_count)
 
 	for (int i = first_prime(wheel); i <= sqrtn; i += 2)
 	{
-		if (!is_prime(primes, i))
+		if (!is_prime(primes, i, wp))
 			continue;
-
+		cout << i << "\n";
 		// Multiples of i is marked composite.
 		// We start from i*i.
 		int period_offset = i / period;
 		int ns_index = 0;
 		int j = period_offset * period + ns[ns_index];
+		if (j == 1)
+		{
+			ns_index++;
+			j = period_offset * period + ns[ns_index];
+		}
 
-		while (i*j <= n)
+		while (i * j <= n)
 		{
 			set_composite(primes, j * i);
 			ns_index++;
@@ -92,6 +98,21 @@ vector<char> get_primes(int max, int wheel_prime_count)
 	}
 
 	return primes;
+}
+
+void set_wheel_multiples(vector<char> &primes, const Wheel &w)
+{
+	auto p = w.get_wheel_primes();
+
+	for (int i = 1; i < p.size(); i++)
+	{
+		int max = primes.size() * 16 + 1;
+		int prime = p[i];
+		for (int j = prime * 3; j <= max; j += 2 * prime)
+		{
+			set_composite(primes, j);
+		}
+	}
 }
 
 vector<char> get_primes_segmented(int max, int wheel_prime_count, int seg_size)
@@ -158,6 +179,17 @@ bool sequence_equal(const vector<T> &x, const vector<T> &y)
 	}
 
 	return true;
+}
+
+bool is_prime(vector<char> &bytes, int n, vector<int> &wheel_prime)
+{
+	for (int i = 0; i < wheel_prime.size(); i++)
+	{
+		if (n % wheel_prime[i] == 0)
+			return false;
+	}
+
+	return is_prime(bytes, n);
 }
 
 bool is_prime(vector<char> &bytes, int n)
@@ -228,7 +260,11 @@ void test_get_primes()
 {
 	int n = 1'000'000;
 	auto expected = get_primes_by_trial(n);
-	assert(sequence_equal(expected, get_primes(n)), "get_primes test");
+	auto actual = get_primes(n, 3);
+	set_wheel_multiples(actual, Wheel(3));
+	auto const &a = actual;
+
+	assert(sequence_equal(expected, a), "get_primes test");
 }
 
 void wheel_test()
