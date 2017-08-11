@@ -19,6 +19,19 @@ int extend_range(int max);
 vector<char> get_primes_by_trial(int max);
 template <typename T>
 bool sequence_equal(vector<T>& x, vector<T>& y);
+
+template <typename T>
+bool contain(vector<T>& v, T x)
+{
+	for (int i = 0; i < v.size(); i++)
+	{
+		if (v[i] == x)
+			return true;
+	}
+
+	return false;
+}
+
 void set_composite(vector<char>& bytes, int n);
 int get_index(int n);
 int get_bit(int n);

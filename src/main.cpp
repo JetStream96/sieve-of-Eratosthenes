@@ -3,10 +3,14 @@
 #include <iostream>
 #include "Wheel.h"
 #include "global.h"
+#include <ctime>
+
+using std::cout;
 
 int main(int argc, char *argv[])
 {
 	auto arg = to_str_vec(argv, argc);
+	int start_time = clock();
 
 	// First arg is the executable name.
 	if (argc == 2)
@@ -28,8 +32,13 @@ int main(int argc, char *argv[])
 		else if (arg[1] == "gen")
 		{
 			auto p = get_primes(1'000'000'000, 3);
-			std::cout << (int)(uint8_t)p[p.size() - 2];
+			cout << (int)(uint8_t)p[p.size() - 2];
 		}
+	}
+
+	if(contain<string>(arg, "--time"))
+	{
+		cout << "Took " << (clock() - start_time)/1000 << " ms\n"; 
 	}
 
 	return 0;
