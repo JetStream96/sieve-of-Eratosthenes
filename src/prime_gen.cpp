@@ -73,7 +73,7 @@ vector<char> get_primes(int max, int wheel_prime_count)
 	{
 		if (!is_prime(primes, i, wp))
 			continue;
-			
+
 		// Multiples of i is marked composite.
 		// We start from i*i.
 		int period_offset = i / period;
@@ -86,7 +86,7 @@ vector<char> get_primes(int max, int wheel_prime_count)
 			j = period_offset * period + ns[ns_index];
 		}
 
-		while (i*j <= n)
+		while (i * j <= n)
 		{
 			set_composite(primes, i * j);
 			ns_index++;
@@ -197,7 +197,8 @@ bool is_prime(vector<char> &bytes, int n)
 {
 	int b = get_bit(n);
 	int index = get_index(n);
-	char c = 1 << (7 - b);
+	int c = 1 << (7 - b);
+	;
 	return (bytes[index] & c) == c;
 }
 
@@ -210,12 +211,14 @@ void set_composite(vector<char> &bytes, int n)
 
 int get_index(int n)
 {
-	return (n - 3) / 16;
+	// Same as (n - 3) / 16
+	return (n - 3) >> 4;
 }
 
 int get_bit(int n)
 {
-	return ((n - 3) % 16) / 2;
+	// Same as ((n - 3) % 16) / 2;
+	return ((n - 3) & 15) >> 1;
 }
 
 #if DEBUG
